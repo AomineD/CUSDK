@@ -6,7 +6,7 @@ With Common Uses SDK, you can make easily most common programming algorithms in 
 <h3>Network Manager</h3>  
 With Network manager you can easily make HTTP POST and GET request, and receive JSON serialized object.  
   
-<i>(Network Manager is abstract clase)</i>  
+<i>(Network Manager is abstract class)</i>   
 
 You can get JsonOBJECT and JsonArray.  
   
