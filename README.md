@@ -15,8 +15,15 @@ Example code for list (C#):
 // this code is into a Monobehaviour class that extends NetworkManager class 
 
  RequestData data = new RequestData(url, RequestType.GET); // set URL and HTTP Request Type
+// OR
+ RequestData data = RequestData.POSTSimple("Api");
+ // OR
+  RequestData data = RequestData.GETSimple("Api");
 
         data.setRequestParams("name", "Javier", "lastname", "Norman"); // You can sent HTTP Request params in GET and POST
+        //OR add individually
+        data.addRequestParams("age", "25");
+
         data.setRootName("users"); // in case that you root JSONObject is not the main list
 
 
