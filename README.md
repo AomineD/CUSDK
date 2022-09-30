@@ -19,6 +19,8 @@ Example code for list (C#):
  RequestData data = RequestData.POSTSimple("Api");
  // OR
   RequestData data = RequestData.GETSimple("Api");
+//AND SET BASE URL
+data.setUrl(baseUrl+data.getUrl());
 
         data.setRequestParams("name", "Javier", "lastname", "Norman"); // You can sent HTTP Request params in GET and POST
         //OR add individually
