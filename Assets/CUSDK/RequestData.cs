@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,15 +7,46 @@ using static NetworkUtility;
 
 public class RequestData
 {
-    internal string url = "";
+    private string url = "";
     private RequestType type;
     private string rootArrayName = "";
     internal string rootName {
         get { return rootArrayName; }
     }
+
+   
+
     private Dictionary<string, string> requestParams = new Dictionary<string, string>();
     private UnityAction<float> progressListener = null;
+    
+    // EASY AND SIMPLE CONSTRUCTORS
 
+    public static RequestData GETSimple(string url)
+    {
+        return new RequestData(url, RequestType.GET);
+    }
+
+    public static RequestData POSTSimple(string url)
+    {
+        return new RequestData(url, RequestType.POST);
+    }
+
+    public static RequestData POSTNoURL()
+    {
+        return new RequestData("", RequestType.POST);
+    }
+
+    public static RequestData GETNoURL()
+    {
+        return new RequestData("", RequestType.GET);
+    }
+
+    public void setUrl(string url)
+    {
+        this.url = url;
+    }
+
+    // BASIC CONSTRUCTOR
     public RequestData(string url, RequestType type)
     {
         this.url = url;
@@ -67,6 +99,16 @@ public class RequestData
     public RequestType getType()
     {
         return type;
+    }
+
+    public string getUrl()
+    {
+        if(url == null || url == "")
+        {
+            throw new ArgumentNullException("Must set URL before load anything");
+        }
+
+        return url;
     }
 
 }

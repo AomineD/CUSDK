@@ -7,23 +7,25 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Networking;
 using static NetworkUtility;
-using static System.Collections.Specialized.BitVector32;
 
+/**
+ * Please always call setRequestData() before load.
+ * */
 public abstract class NetworkManager : MonoBehaviour
 {
-    private RequestData requestData;
+    private RequestData data;
     protected void setRequestData(RequestData data)
     {
-        requestData = data;
+        this.data = data;
     }
 
     protected void load<T>(UnityAction<Response<T>> listener)
     {
-        if (requestData != null) {
-            if (requestData.getType() == RequestType.GET)
-                StartCoroutine(httpRequest<T>(listener));
+        if (data != null) {
+            if (data.getType() == RequestType.GET)
+                StartCoroutine(httpRequest<T>(listener, data));
             else
-                StartCoroutine(httpRequestPost<T>(listener));
+                StartCoroutine(httpRequestPost<T>(listener, data));
         }
         else
         {
@@ -34,12 +36,12 @@ public abstract class NetworkManager : MonoBehaviour
 
     protected void load<T>(UnityAction<ListResponse<T>> listener)
     {
-        if (requestData != null)
+        if (data != null)
         {
-            if (requestData.getType() == RequestType.GET)
-                StartCoroutine(httpRequest<T>(listener));
+            if (data.getType() == RequestType.GET)
+                StartCoroutine(httpRequest<T>(listener, data));
             else
-                StartCoroutine(httpRequestPost<T>(listener));
+                StartCoroutine(httpRequestPost<T>(listener, data));
         }
         else
         {
@@ -50,9 +52,9 @@ public abstract class NetworkManager : MonoBehaviour
 
     protected void loadImage(UnityAction<Response<Sprite>> listener)
     {
-        if(requestData != null)
+        if(data != null)
         {
-            StartCoroutine(httpRequestImage(listener));
+            StartCoroutine(httpRequestImage(listener, data));
         }
         else
         {
@@ -60,11 +62,11 @@ public abstract class NetworkManager : MonoBehaviour
         }
     }
 
-    // SINGLE IMAGE RESPONSE HTTP
-    IEnumerator httpRequestImage(UnityAction<Response<Sprite>> action)
+    // SINGLE IMAGE RESPONSE HTTP GET
+    IEnumerator httpRequestImage(UnityAction<Response<Sprite>> action, RequestData requestData)
     {
 
-        string requestUrl = getUrlFormatted();
+        string requestUrl = getUrlFormatted(requestData);
         using (UnityWebRequest request = UnityWebRequestTexture.GetTexture(requestUrl))
         {
             // null;
@@ -111,11 +113,11 @@ public abstract class NetworkManager : MonoBehaviour
     }
 
 
-    // SINGLE RESPONSE HTTP
-    IEnumerator httpRequest<T>(UnityAction<Response<T>> action)
+    // SINGLE RESPONSE HTTP GET -> POST
+    IEnumerator httpRequest<T>(UnityAction<Response<T>> action, RequestData requestData)
     {
 
-        string requestUrl = getUrlFormatted();
+        string requestUrl = getUrlFormatted(requestData);
        // Debug.Log(requestUrl);
         using (UnityWebRequest request = UnityWebRequest.Get(requestUrl))
         {
@@ -158,11 +160,11 @@ public abstract class NetworkManager : MonoBehaviour
         
     }
 
-    IEnumerator httpRequestPost<T>(UnityAction<Response<T>> action)
+    IEnumerator httpRequestPost<T>(UnityAction<Response<T>> action, RequestData requestData)
     {
 
-        string requestUrl = requestData.url;
-        WWWForm wWWForm = getParamsOf();
+        string requestUrl = requestData.getUrl();
+        WWWForm wWWForm = getParamsOf(requestData);
 
 
 
@@ -209,12 +211,12 @@ public abstract class NetworkManager : MonoBehaviour
        
     }
 
-    // LIST RESPONSE HTTP
+    // LIST RESPONSE HTTP GET -> POST
 
-    IEnumerator httpRequest<T>(UnityAction<ListResponse<T>> action)
+    IEnumerator httpRequest<T>(UnityAction<ListResponse<T>> action, RequestData requestData)
     {
 
-        string requestUrl = getUrlFormatted();
+        string requestUrl = getUrlFormatted(requestData);
         // Debug.Log(requestUrl);
         using (UnityWebRequest request = UnityWebRequest.Get(requestUrl))
         {
@@ -257,11 +259,11 @@ public abstract class NetworkManager : MonoBehaviour
         }
     }
 
-    IEnumerator httpRequestPost<T>(UnityAction<ListResponse<T>> action)
+    IEnumerator httpRequestPost<T>(UnityAction<ListResponse<T>> action, RequestData requestData)
     {
 
-        string requestUrl = requestData.url;
-        WWWForm wWWForm = getParamsOf();
+        string requestUrl = requestData.getUrl();
+        WWWForm wWWForm = getParamsOf(requestData);
 
 
 
@@ -310,42 +312,7 @@ public abstract class NetworkManager : MonoBehaviour
     }
 
 
-    private WWWForm getParamsOf()
-    {
 
-        WWWForm wwwForm = new WWWForm();
-
-        if (requestData.getRequestParams().Count > 0)
-        {
-            foreach (KeyValuePair<string, string> kvp in requestData.getRequestParams())
-            {
-                wwwForm.AddField(kvp.Key, kvp.Value);
-            }
-        }
-
-        return wwwForm;
-
-    }
-
-    private string getUrlFormatted()
-    {
-        string ur = requestData.url;
-        if (requestData.getRequestParams().Count > 0)
-        {
-            ur += "?";
-            foreach (KeyValuePair<string, string> kvp in requestData.getRequestParams())
-            {
-                ur+=kvp.Key+"=" + kvp.Value+"&";
-            }
-        }
-
-        if (ur.EndsWith("&"))
-        {
-            ur = ur.Substring(0, ur.Length - 1);
-        }
-
-       return ur;
-    }
 }
 
 

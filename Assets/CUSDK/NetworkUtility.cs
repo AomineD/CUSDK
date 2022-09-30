@@ -5,8 +5,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
-using static MessageCloud;
 
+/** 
+ * Utils for Better Network management and Single responsibility principle
+ * **/
 public class NetworkUtility
 {
     public static bool isError(UnityWebRequest webRequest)
@@ -73,6 +75,43 @@ public class NetworkUtility
 
         return values;
 
+    }
+
+    public static WWWForm getParamsOf(RequestData requestData)
+    {
+
+        WWWForm wwwForm = new WWWForm();
+
+        if (requestData.getRequestParams().Count > 0)
+        {
+            foreach (KeyValuePair<string, string> kvp in requestData.getRequestParams())
+            {
+                wwwForm.AddField(kvp.Key, kvp.Value);
+            }
+        }
+
+        return wwwForm;
+
+    }
+
+    public static string getUrlFormatted(RequestData requestData)
+    {
+        string ur = requestData.getUrl();
+        if (requestData.getRequestParams().Count > 0)
+        {
+            ur += "?";
+            foreach (KeyValuePair<string, string> kvp in requestData.getRequestParams())
+            {
+                ur += kvp.Key + "=" + kvp.Value + "&";
+            }
+        }
+
+        if (ur.EndsWith("&"))
+        {
+            ur = ur.Substring(0, ur.Length - 1);
+        }
+
+        return ur;
     }
 
 }
