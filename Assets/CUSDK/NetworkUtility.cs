@@ -50,6 +50,35 @@ public class NetworkUtility
         return result;
     }
 
+
+    public static Dictionary<string, string> fromArrayRange(Dictionary<string, string> original, string[] keys, string[] values)
+    {
+   
+        if (keys.Length == values.Length)
+        {
+            for (int i = 0; i < keys.Length; i++)
+            {
+                original.Add(keys[i], values[i]);
+            }
+        }
+
+        return original;
+    }
+
+    public static Dictionary<string, string> fromListOriented(Dictionary<string, string> original,  params string[] list)
+    {
+     
+
+        for (int i = 0; i < list.Length && i + 1 < list.Length; i += 2)
+        {
+            original.Add(list[i], list[i + 1]);
+        }
+
+
+        return original;
+    }
+
+
     public static List<T> getFrom<T>(string json, string root = "")
     {
         List<T> values = new List<T>();

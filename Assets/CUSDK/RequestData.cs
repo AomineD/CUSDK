@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using UnityEngine;
 using UnityEngine.Events;
 using static NetworkUtility;
@@ -67,7 +68,7 @@ public class RequestData
     /// </summary>
     public void setRequestParams(params string[] list)
     {
-        this.requestParams = NetworkUtility.fromListOriented(list);
+        this.requestParams = fromListOriented(list);
     }
 
 
@@ -78,6 +79,15 @@ public class RequestData
     {
         rootArrayName = root;
     }
+
+    /// <summary>
+    /// This method add requestParams in POST or GET request, you can use inline key-value pars
+    /// </summary>
+    public void addRequestParams(params string[] list)
+    {
+        requestParams = fromListOriented(requestParams, list);
+    }
+
 
     public void setProgressListener(UnityAction<float> progressListener)
     {
