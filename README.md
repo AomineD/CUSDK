@@ -3,6 +3,8 @@ Common Uses SDK
   
 With Common Uses SDK, you can make easily most common programming algorithms in Unity Games.  
   
+<i>This unitypackage requires Unity Admob for AdmobManager</i>
+  
 <h3>Network Manager</h3>  
 With Network manager you can easily make HTTP POST and GET request, and receive JSON serialized object.  
   
@@ -55,5 +57,9 @@ Example code for result request:
         }
     }
 ``` 
-Full example code: [MessageCloud.cs](/Assets/CUSDK/MessageCloud.cs)  
+Full example code: [MessageCloud.cs](/Assets/CUSDK/NetworkManager/MessageCloud.cs)  
+  
+<h3>Admob Manager</h3>  
+  
+It is an abstract class for manage easily your <b>Admob ads</b>, please refer to [ExampleAdmobManager.cs](/Assets/CUSDK/AdmobManager/ExampleAdmobManager.cs) to see an implementation sample  
   
