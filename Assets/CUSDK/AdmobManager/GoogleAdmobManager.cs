@@ -43,12 +43,19 @@ public abstract class GoogleAdmobManager : MonoBehaviour
     }
 
 
-    public void RequestBanner()
+    public void RequestBanner(AdSize adSize = null, AdPosition position = AdPosition.Bottom)
     {
        if(adSettings == null)
         {
             return;
         }
+
+
+       if(adSize == null)
+        {
+            adSize = AdSize.Banner;
+        }
+
 #if UNITY_ANDROID
         string adUnitId = adSettings.getAndroidAd(AdSettings.AdType.BANNER);
 #elif UNITY_IPHONE
@@ -62,7 +69,7 @@ public abstract class GoogleAdmobManager : MonoBehaviour
             bannerView = null;
         }
         // Create a 320x50 banner at the top of the screen.
-        this.bannerView = new BannerView(adUnitId, AdSize.Banner, AdPosition.Bottom);
+        this.bannerView = new BannerView(adUnitId, adSize, position);
 
         // Create an empty ad request.
         AdRequest request = new AdRequest.Builder().Build();
@@ -73,8 +80,13 @@ public abstract class GoogleAdmobManager : MonoBehaviour
 
 
 
-    public void RequestBanner(string bannerID)
+    public void RequestBanner(string bannerID, AdSize adSize = null, AdPosition position = AdPosition.Bottom)
     {
+        if(adSize == null)
+        {
+            adSize = AdSize.Banner;
+        }
+
         string adUnitId = bannerID;
         if (bannerView != null)
         {
@@ -82,7 +94,7 @@ public abstract class GoogleAdmobManager : MonoBehaviour
             bannerView = null;
         }
         // Create a 320x50 banner at the top of the screen.
-        this.bannerView = new BannerView(adUnitId, AdSize.Banner, AdPosition.Bottom);
+        this.bannerView = new BannerView(adUnitId, adSize, position);
 
         // Create an empty ad request.
         AdRequest request = new AdRequest.Builder().Build();
@@ -91,6 +103,41 @@ public abstract class GoogleAdmobManager : MonoBehaviour
         this.bannerView.LoadAd(request);
     }
 
+
+    public void RequestBannerAdaptative(AdPosition position = AdPosition.Bottom)
+    {
+        if (adSettings == null)
+        {
+            return;
+        }
+#if UNITY_ANDROID
+        string adUnitId = adSettings.getAndroidAd(AdSettings.AdType.BANNER);
+#elif UNITY_IPHONE
+            string adUnitId = adSettings.getiOSAd(AdSettings.AdType.BANNER);
+#else
+        string adUnitId = "unexpected_platform";
+#endif
+        if (bannerView != null)
+        {
+            bannerView.Destroy();
+            bannerView = null;
+        }
+
+        AdSize adaptiveSize =
+              AdSize.GetCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(AdSize.FullWidth);
+
+        // Create a adaptative banner at the you selected position.
+        this.bannerView = new BannerView(adUnitId, adaptiveSize, position);
+
+        // Create an empty ad request.
+        AdRequest request = new AdRequest.Builder().Build();
+
+        // Load the banner with the request.
+        this.bannerView.LoadAd(request);
+
+       
+
+    }
 
     public void destroyBanner()
     {

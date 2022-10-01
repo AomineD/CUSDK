@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEditor;
 #endif
 
+// This code was made by John Earnshaw, original source: https://github.com/johnearnshaw/unity-inspector-help/
+//-------------------------------------------------------------------------------------------------
 [AttributeUsage(AttributeTargets.Field, Inherited = true)]
 public class HelpAttribute : PropertyAttribute
 {
